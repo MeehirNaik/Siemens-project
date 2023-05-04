@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<books>
+  <book>
+    <title>The Catcher in the Rye</title>
+    <author>J.D. Salinger</author>
+    <year>1951</year>
+  </book>
+  <book>
+    <title>To Kill a Mockingbird</title>
+    <author>Harper Lee</author>
+    <year>1960</year>
+  </book>
+</books>

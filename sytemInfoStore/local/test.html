@@ -1,0 +1,422 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>System Info Table</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>Serial Number</th>
+          <th>IP Address</th>
+          <th>MAC Address</th>
+          <th>Hostname</th>
+          <th>Boot Time</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+      </tbody>
+    </table>
+
+    <script>
+
+        // wroking code below
+
+        // async function fetchXmlFiles() {
+        //     const response = await fetch("./data/");
+        //     const text = await response.text();
+        //     const parser = new DOMParser();
+        //     const htmlDoc = parser.parseFromString(text, "text/html");
+        //     const links = htmlDoc.querySelectorAll("a");
+        //     const xmlLinks = Array.from(links).filter((link) => link.href.endsWith(".xml"));
+
+        //     for (const xmlLink of xmlLinks) {
+        //         const xmlLinkParts = xmlLink.href.split("/");
+        //         xmlLinkParts.splice(3, 0, "data");
+        //         const xmlLinkWithDataset = xmlLinkParts.join('/');
+        //         const response = await fetch(xmlLinkWithDataset);
+        //         const xmlText = await response.text();
+        //         console.log(xmlText);
+        //     }
+        // }
+
+        async function fetchXmlFiles() {
+            const response = await fetch("./data/");
+            const text = await response.text();
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(text, "text/html");
+            const links = htmlDoc.querySelectorAll("a");
+            const xmlLinks = Array.from(links).filter((link) => link.href.endsWith(".xml"));
+
+            const tableBody = document.querySelector("#table-body");
+            for (const xmlLink of xmlLinks) {
+                const xmlLinkParts = xmlLink.href.split("/");
+                xmlLinkParts.splice(3, 0, "data");
+                const xmlLinkWithDataset = xmlLinkParts.join('/');
+                const response = await fetch(xmlLinkWithDataset);
+                const xmlText = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                const records = xmlDoc.querySelectorAll("SystemInfo");
+                console.log(records);
+                const row = document.createElement("tr");
+                // const record = records.querySelector("IPAddress");
+                const record = records.getElementsByTagName("IPAddress")[0].textContent;
+                console.log(record)
+                // const ipAddress = record.getAttribute("IPAddress");
+                // console.log(ipAddress);
+                row.innerHTML = `
+                    <td>${records.getElementsByTagName("SerialNumber")[0].textContent}</td>
+                    <td>${records.getElementsByTagName("IPAddress")[0].textContent}</td>
+                    <td>${records.getElementsByTagName("MACAddress")[0].textContent}</td>
+                    <td>${records.getElementsByTagName("HostName")[0].textContent}</td>
+                    <td>${records.getElementsByTagName("BootTime")[0].textContent}</td>
+                `;
+                tableBody.appendChild(row);
+
+                
+                // for (const record of records) {
+                //     const row = document.createElement("tr");
+                //     row.innerHTML = `
+                //         <td>${record.getAttribute("SerialNumber")}</td>
+                //         <td>${record.getAttribute("IPAddress")}</td>
+                //         <td>${record.getAttribute("MACAddress")}</td>
+                //         <td>${record.getAttribute("HostName")}</td>
+                //         <td>${record.getAttribute("BootTime")}</td>
+                //     `;
+                //     tableBody.appendChild(row);
+                // }
+            }
+        }
+
+        fetchXmlFiles();
+
+
+    </script>
+  </body>
+</html> -->
+
+
+<!-- new code -->
+
+
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>System Info Table</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>Serial Number</th>
+          <th>IP Address</th>
+          <th>MAC Address</th>
+          <th>Hostname</th>
+          <th>Boot Time</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+      </tbody>
+    </table>
+
+    <script>
+
+      async function fetchXmlFiles() {
+        try {
+          // Fetch the HTML page that contains the links to the XML files
+          const response = await fetch("./data/");
+          if (!response.ok) {
+            throw new Error("Failed to fetch HTML file");
+          }
+
+          // Parse the HTML page to get the links to the XML files
+          const htmlText = await response.text();
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(htmlText, "text/html");
+          const links = htmlDoc.querySelectorAll("a");
+          const xmlLinks = Array.from(links).filter((link) => link.href.endsWith(".xml"));
+
+          // Fetch and parse each XML file, and add its data to the table
+          const tableBody = document.querySelector("#table-body");
+          for (const xmlLink of xmlLinks) {
+            const xmlLinkParts = xmlLink.href.split("/");
+            xmlLinkParts.splice(3, 0, "data");
+            const xmlLinkWithDataset = xmlLinkParts.join('/');
+            const response = await fetch(xmlLinkWithDataset);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch XML file ${xmlLink.href}`);
+            }
+            const xmlText = await response.text();
+            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+            const records = xmlDoc.querySelectorAll("SystemInfo");
+            if (records.length === 0) {
+              throw new Error(`No SystemInfo elements found in XML file ${xmlLink.href}`);
+            }
+
+            // Add the data from the first SystemInfo element to the table
+            const row = document.createElement("tr");
+            const serialNumber = records[0].querySelector("SerialNumber")?.textContent || "";
+            const ipAddress = records[0].querySelector("IPAddress")?.textContent || "";
+            const macAddress = records[0].querySelector("MACAddress")?.textContent || "";
+            const hostName = records[0].querySelector("HostName")?.textContent || "";
+            const bootTime = records[0].querySelector("BootTime")?.textContent || "";
+            row.innerHTML = `
+              <td>${serialNumber}</td>
+              <td>${ipAddress}</td>
+              <td>${macAddress}</td>
+              <td>${hostName}</td>
+              <td>${bootTime}</td>
+            `;
+            tableBody.appendChild(row);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      fetchXmlFiles();
+
+    </script>
+  </body>
+</html> -->
+
+
+<!-- version 2 -->
+
+
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>System Info Table</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>Serial Number</th>
+          <th>IP Address</th>
+          <th>MAC Address</th>
+          <th>Hostname</th>
+          <th>Boot Time</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+      </tbody>
+    </table>
+
+    <script>
+
+        async function fetchXmlFiles() {
+            const response = await fetch("./data/");
+            const text = await response.text();
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(text, "text/html");
+            const links = htmlDoc.querySelectorAll("a");
+            const xmlLinks = Array.from(links).filter((link) => link.href.endsWith(".xml"));
+
+            const tableBody = document.querySelector("#table-body");
+            for (const xmlLink of xmlLinks) {
+                const xmlLinkParts = xmlLink.href.split("/");
+                xmlLinkParts.splice(3, 0, "data");
+                const xmlLinkWithDataset = xmlLinkParts.join('/');
+                const response = await fetch(xmlLinkWithDataset);
+                const xmlText = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                const records = xmlDoc.querySelectorAll("SystemInfo");
+                console.log(records);
+                
+                for (const record of records) {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${record.querySelector("SerialNumber").textContent}</td>
+                        <td>${record.querySelector("IPAddress").textContent}</td>
+                        <td>${record.querySelector("MACAddress").textContent}</td>
+                        <td>${record.querySelector("HostName").textContent}</td>
+                        <td>${record.querySelector("BootTime").textContent}</td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            }
+        }
+
+        fetchXmlFiles();
+
+
+    </script>
+  </body>
+</html> -->
+
+
+<!-- version 3 -->
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>System Info Table</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>Serial Number</th>
+          <th>IP Address</th>
+          <th>MAC Address</th>
+          <th>Hostname</th>
+          <th>Boot Time</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+      </tbody>
+    </table>
+
+    <script>
+
+        // version 1
+
+        // async function fetchXmlFiles() {
+        //     try {
+        //         const response = await fetch("./data/");
+        //         if (!response.ok) {
+        //             throw new Error(`Failed to fetch data. Server returned ${response.status} ${response.statusText}.`);
+        //         }
+        //         const text = await response.text();
+        //         const parser = new DOMParser();
+        //         const htmlDoc = parser.parseFromString(text, "text/html");
+        //         const links = htmlDoc.querySelectorAll("a");
+        //         const xmlLinks = Array.from(links).filter((link) => link.href.endsWith(".xml"));
+
+        //         const tableBody = document.querySelector("#table-body");
+        //         for (const xmlLink of xmlLinks) {
+        //             const xmlLinkParts = xmlLink.href.split("/");
+        //             xmlLinkParts.splice(3, 0, "data");
+        //             const xmlLinkWithDataset = xmlLinkParts.join('/');
+        //             const response = await fetch(xmlLinkWithDataset);
+        //             if (!response.ok) {
+        //                 throw new Error(`Failed to fetch XML data from ${xmlLinkWithDataset}. Server returned ${response.status} ${response.statusText}.`);
+        //             }
+        //             const xmlText = await response.text();
+        //             const parser = new DOMParser();
+        //             const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        //             const records = xmlDoc.querySelectorAll("SystemInfo");
+        //             if (records.length === 0) {
+        //                 console.warn(`No SystemInfo elements found in ${xmlLinkWithDataset}. Skipping this file.`);
+        //                 continue;
+        //             }
+        //             for (const record of records) {
+        //                 const row = document.createElement("tr");
+        //                 const serialNumber = record.querySelector("SerialNumber");
+        //                 const ipAddress = record.querySelector("IPAddress");
+        //                 const macAddress = record.querySelector("MACAddress");
+        //                 const hostName = record.querySelector("HostName");
+        //                 const bootTime = record.querySelector("BootTime");
+        //                 if (!serialNumber || !ipAddress || !macAddress || !hostName || !bootTime) {
+        //                     console.warn(`One or more required elements not found in SystemInfo element of ${xmlLinkWithDataset}. Skipping this record.`);
+        //                     continue;
+        //                 }
+        //                 row.innerHTML = `
+        //                     <td>${serialNumber.textContent}</td>
+        //                     <td>${ipAddress.textContent}</td>
+        //                     <td>${macAddress.textContent}</td>
+        //                     <td>${hostName.textContent}</td>
+        //                     <td>${bootTime.textContent}</td>
+        //                 `;
+        //                 tableBody.appendChild(row);
+        //             }
+        //         }
+        //     } catch (error) {
+        //         console.error(error);
+        //     }
+        // }
+
+        // fetchXmlFiles();
+
+
+        // version 2
+
+    async function fetchXmlFiles() {
+    try {
+        const response = await fetch("./data/");
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data. Server returned ${response.status} ${response.statusText}.`);
+        }
+        const text = await response.text();
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(text, "text/html");
+        const links = htmlDoc.querySelectorAll("a");
+        const xmlLinks = Array.from(links).filter((link) => link.href.endsWith(".xml"));
+
+        const allElements = [];
+        for (const xmlLink of xmlLinks) {
+            const xmlLinkParts = xmlLink.href.split("/");
+            xmlLinkParts.splice(3, 0, "data");
+            const xmlLinkWithDataset = xmlLinkParts.join('/');
+            const response = await fetch(xmlLinkWithDataset);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch XML data from ${xmlLinkWithDataset}. Server returned ${response.status} ${response.statusText}.`);
+            }
+            const xmlText = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+            const records = xmlDoc.querySelectorAll("SystemInfo");
+            if (records.length === 0) {
+                console.warn(`No SystemInfo elements found in ${xmlLinkWithDataset}. Skipping this file.`);
+                continue;
+            }
+            for (const record of records) {
+                const serialNumber = record.querySelector("SerialNumber");
+                const ipAddress = record.querySelector("IPAddress");
+                const macAddress = record.querySelector("MACAddress");
+                const hostName = record.querySelector("HostName");
+                const bootTime = record.querySelector("BootTime");
+                if (!serialNumber || !ipAddress || !macAddress || !hostName || !bootTime) {
+                    console.warn(`One or more required elements not found in SystemInfo element of ${xmlLinkWithDataset}. Skipping this record.`);
+                    continue;
+                }
+                allElements.push(
+                    serialNumber.textContent.trim(),
+                    ipAddress.textContent.trim(),
+                    macAddress.textContent.trim(),
+                    hostName.textContent.trim(),
+                    bootTime.textContent.trim()
+                );
+            }
+        }
+
+        // Create a Set to remove duplicates
+        const uniqueElements = new Set(allElements);
+
+        // Convert Set back to an array and log it
+        console.log(Array.from(uniqueElements));
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+fetchXmlFiles();
+
+
+
+        // Code to close the batch file and local server
+        window.addEventListener("beforeunload", () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "./close-server");
+            xhr.send();
+        });
+
+        // Code to terminate batch file and local server when tab is closed
+        window.addEventListener("unload", () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "./terminate-server");
+            xhr.send();
+        });
+
+    </script>
+  </body>
+</html>
