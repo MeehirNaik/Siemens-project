@@ -27,20 +27,12 @@ def get_system_info():
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
     return serial_number, host_name, ip_address, mac_address, timestamp
 
-def createNewTextFile(tempFile):
-    # Create new temp file and add data to it
-            if os.path.exists(tempFile):
-                tempData = f"\n{','.join(row)}"
-            else:
-                tempData = f"{','.join(row)}"
-            with open(tempFile, "a") as k:
-                k.write(tempData)
 
 def write_data_to_file(file_path, data):
-    if os.path.exists(file_path + "system_info.xlsx"):
+    if os.path.exists(file_path):
         # Check if temp.txt file exists and can be uploaded
-        if os.path.exists("temp" + file_path[-6:-2] + ".txt"):
-            with open("temp" + file_path[-6:-2] + ".txt", "r") as f:
+        if os.path.exists("temp.txt"):
+            with open("temp.txt", "r") as f:
                 text = f.read()
                 text = text.split('\n')
                 # print(text)
@@ -49,10 +41,10 @@ def write_data_to_file(file_path, data):
                     # print(line,"LINE")
                     try:
                         # Append data to existing file
-                        wb = openpyxl.load_workbook(file_path + "system_info.xlsx")
+                        wb = openpyxl.load_workbook("system_info.xlsx")
                         ws = wb.active
                         ws.append(line.strip().split(","))
-                        wb.save(file_path + "system_info.xlsx")
+                        wb.save("system_info.xlsx")
                     except:
                         loop_completed = False
                         print("Temp data cannot be uploaded at this moment.")
@@ -60,8 +52,6 @@ def write_data_to_file(file_path, data):
                 if loop_completed:
                     # do something if loop ran to completion
                     print("Temp data uploaded successfully!")
-                    # Delete the temp file
-                    os.remove("temp" + file_path[-6:-2] + ".txt")
 
         # Append present data to existing file
         try:
@@ -73,15 +63,26 @@ def write_data_to_file(file_path, data):
             wb.save("system_info.xlsx")
             print(f"Data saved successfully: {row}")
 
+            # Delete the temp file
+            try:
+                os.remove("temp.txt")
+            except:
+                print("temp not present")
         except:
-            createNewTextFile("temp" + file_path[-6:-2] + ".txt")
+            # Create new temp file and add data to it
+            if os.path.exists("temp.txt"):
+                tempData = f"\n{','.join(row)}"
+            else:
+                tempData = f"{','.join(row)}"
+            with open("temp.txt", "a") as k:
+                k.write(tempData)
                 
             print("Data added to temp file for later upload.")
     else:
         # Create new file and add data
-        workbook = xlsxwriter.Workbook(file_path + "system_info.xlsx")
+        workbook = xlsxwriter.Workbook(file_path)
         worksheet = workbook.add_worksheet()
-        worksheet.write_row(0, 0, ['Serial Number', 'Host Name', 'IP Address', 'MAC Address', 'Boot Time', 'Read Time'])
+        worksheet.write_row(0, 0, ['Serial Number', 'Host Name', 'IP Address', 'MAC Address', 'Time'])
         row = data
         worksheet.write_row(1, 0, row)
         workbook.close()
@@ -121,3 +122,4 @@ def main():
     # remove_empty_rows(file_path)
 
 main()
+
