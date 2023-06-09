@@ -11,7 +11,6 @@ Public Class MainForm
     Inherits Form
 
     Private videoPlayer As New PictureBox()
-    Private captureButton As New Button()
     Private videoSource As VideoCaptureDevice
 
     Public Sub New()
@@ -30,15 +29,8 @@ Public Class MainForm
         Me.videoPlayer.Size = Me.ClientSize
         Me.videoPlayer.SizeMode = PictureBoxSizeMode.StretchImage
 
-        ' captureButton properties
-        Me.captureButton.Text = "Capture"
-        Me.captureButton.Size = New Size(80, 30)
-        Me.captureButton.Location = New Point((Me.ClientSize.Width - Me.captureButton.Width) \ 2, Me.ClientSize.Height - 50)
-        Me.captureButton.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-
-        ' Add controls to MainForm
+        ' Add videoPlayer to MainForm
         Me.Controls.Add(Me.videoPlayer)
-        Me.Controls.Add(Me.captureButton)
 
         Me.ResumeLayout(False)
     End Sub
@@ -58,14 +50,6 @@ Public Class MainForm
         videoPlayer.Image = DirectCast(eventArgs.Frame.Clone(), Bitmap)
     End Sub
 
-    Private Sub CaptureButton_Click(sender As Object, e As EventArgs) Handles captureButton.Click
-        Dim captureImage As Image = videoPlayer.Image
-        If captureImage IsNot Nothing Then
-            captureImage.Save("captured_image.jpg", Imaging.ImageFormat.Jpeg)
-            MessageBox.Show("Image captured and saved as captured_image.jpg")
-        End If
-    End Sub
-
     Protected Overrides Sub OnClosed(e As EventArgs)
         MyBase.OnClosed(e)
         videoSource.SignalToStop()
@@ -76,3 +60,4 @@ Public Class MainForm
         Application.Run(New MainForm())
     End Sub
 End Class
+
