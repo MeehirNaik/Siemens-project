@@ -1,0 +1,11 @@
+path:  C:\Users\naikm\Downloads\Python Harry\tensorflow object detection\yolov8
+train: C:\Users\naikm\Downloads\Python Harry\tensorflow object detection\yolov8\yolov8\train\images
+test: C:\Users\naikm\Downloads\Python Harry\tensorflow object detection\yolov8\yolov8\test\images
+val: C:\Users\naikm\Downloads\Python Harry\tensorflow object detection\yolov8\yolov8\val\images
+
+#Classes
+nc: 4
+
+#classes names
+#replace all class names list with your classes names
+names: ['blue wire','red wire','red and blue wire','box arround wires']
