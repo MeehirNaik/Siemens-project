@@ -60,6 +60,11 @@ class MyApp(QMainWindow):
         self.camera_select_butn.clicked.connect(self.switch_camera)
         
     def switch_camera(self):
+        if self.lineEdit.text().strip():  # Check if the text box is not empty
+            print("Text box is not empty")
+        else:
+            print("Text box is empty")
+            return
         if self.camera_flag == True:
             self.thread.stop()
             print("Thread Stopped")
@@ -85,16 +90,31 @@ class MyApp(QMainWindow):
     def capture_frame(self):
         if self.directory is None:
             return
+        
+        if self.lineEdit.text().strip():  # Check if the text box is not empty
+            print("Text box is not empty")
+        else:
+            print("Text box is empty")
+            return
+        
+        if self.camera_lineEdit.text().strip():  # Check if the text box is not empty
+            print("Text box is not empty")
+        else:
+            print("Text box is empty")
+            return
+        
 
-        # Generate a unique filename for the captured frame
-        filename = self.directory + "/" + self.lineEdit.text() + self.comboBox.currentText()
+        if self.camera_flag == True:
+            # Generate a unique filename for the captured frame
+            filename = self.directory + "/" + self.lineEdit.text() + self.comboBox.currentText()
 
-        cv2.imwrite(filename, self.cv_img)
+            cv2.imwrite(filename, self.cv_img)
 
-        print("Frame captured and saved at:", filename)
+            print("Frame captured and saved at:", filename)
 
     def closeEvent(self, event):
-        self.thread.stop()
+        if self.camera_flag == True:
+            self.thread.stop()
         event.accept()
 
     @pyqtSlot(np.ndarray)
