@@ -42,3 +42,100 @@ temp.txt: temp file is used to store data if the data can't be stored or can't a
 ####	 Acknowledgments:	 ####
 
 This program was developed by Meehir Naik - Apprentice - MAY 2023.
+
+
+
+
+
+
+
+
+Imports System.Windows.Forms
+
+Public Class Form1
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim result As DialogResult = CustomMessageBox.ShowImageZoom("Image.jpg", "Image Viewer", MessageBoxButtons.YesNo)
+        If result = DialogResult.Yes Then
+            ' Code to handle Yes button click
+            MessageBox.Show("Yes button clicked")
+        ElseIf result = DialogResult.No Then
+            ' Code to handle No button click
+            MessageBox.Show("No button clicked")
+        End If
+    End Sub
+End Class
+
+Public Class CustomMessageBox
+    Inherits Form
+
+    Private pictureBox As PictureBox
+    Private zoomFactor As Double = 1.0
+
+    Public Shared Function ShowImageZoom(imagePath As String, caption As String, buttons As MessageBoxButtons) As DialogResult
+        Dim form As New CustomMessageBox()
+        form.InitializeComponent(imagePath)
+        form.Text = caption
+        form.InitializeButtons(buttons)
+        Return form.ShowDialog()
+    End Function
+
+    Private Sub InitializeComponent(imagePath As String)
+        pictureBox = New PictureBox()
+        pictureBox.Image = Image.FromFile(imagePath)
+        pictureBox.SizeMode = PictureBoxSizeMode.StretchImage
+        Controls.Add(pictureBox)
+        pictureBox.Dock = DockStyle.Fill
+
+        AddHandler MouseWheel, AddressOf CustomMessageBox_MouseWheel
+    End Sub
+
+    Private Sub InitializeButtons(buttons As MessageBoxButtons)
+        Dim buttonPanel As New FlowLayoutPanel()
+        buttonPanel.FlowDirection = FlowDirection.RightToLeft
+        buttonPanel.Dock = DockStyle.Bottom
+
+        Dim buttonYes As New Button()
+        buttonYes.Text = "&Yes"
+        buttonYes.DialogResult = DialogResult.Yes
+        buttonPanel.Controls.Add(buttonYes)
+
+        Dim buttonNo As New Button()
+        buttonNo.Text = "&No"
+        buttonNo.DialogResult = DialogResult.No
+        buttonPanel.Controls.Add(buttonNo)
+
+        Select Case buttons
+            Case MessageBoxButtons.OK
+                buttonYes.Visible = False
+                buttonNo.Text = "&OK"
+                AcceptButton = buttonNo
+            Case MessageBoxButtons.OKCancel
+                buttonYes.Visible = False
+                AcceptButton = buttonNo
+                CancelButton = buttonNo
+            Case MessageBoxButtons.YesNo
+                AcceptButton = buttonYes
+                CancelButton = buttonNo
+            Case MessageBoxButtons.YesNoCancel
+                AcceptButton = buttonYes
+                CancelButton = buttonNo
+        End Select
+
+        Controls.Add(buttonPanel)
+    End Sub
+
+    Private Sub CustomMessageBox_MouseWheel(sender As Object, e As MouseEventArgs)
+        If e.Delta > 0 Then
+            zoomFactor += 0.1
+        ElseIf e.Delta < 0 Then
+            zoomFactor -= 0.1
+        End If
+
+        If zoomFactor < 0.1 Then
+            zoomFactor = 0.1
+        End If
+
+        pictureBox.Width = CInt(pictureBox.Image.Width * zoomFactor)
+        pictureBox.Height = CInt(pictureBox.Image.Height * zoomFactor)
+    End Sub
+End Class
